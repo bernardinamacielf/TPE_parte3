@@ -24,14 +24,13 @@ class productosModelo {
         }
     }
 
-    public function obtenerProductos($filtrarSinStock = null, $orderBy = false, $orderDirection = 'ASC') {
+    public function obtenerProductos($orderBy, $orderDirection, $filtro, $valor, $pagina, $limite) {
         $sql = 'SELECT * FROM productos';
+        $params = [];
 
-        if($filtrarSinStock != null) {
-            if($filtrarSinStock == 'true')
-                $sql .= ' WHERE sin_stock = 1';
-            else
-                $sql .= ' WHERE sin_stock = 0';
+        if($filtro && $valor) {
+            $sql .= " WHERE $filtro = ?";
+            $params[] = $valor;
         }
 
         if (strtoupper($orderDirection) === 'DESC') {
@@ -57,8 +56,14 @@ class productosModelo {
             }
         }
 
+        //paginacion
+        if($pagina !==null && $limite !==null) {
+            $desplazamiento = ($pagina - 1) * $limite;
+            $sql .= ' LIMIT ' .(int)$limite . ' OFFSET ' . (int)$desplazamiento; //asegura que los valores sean números enteros
+        }
+
         $query = $this->db->prepare($sql);
-        $query->execute();
+        $query->execute($params);
 
         $productos = $query->fetchAll(PDO::FETCH_OBJ);
         return $productos;
@@ -90,13 +95,8 @@ class productosModelo {
         $query->execute([$ID_producto]);
     }
 
-    public function editarProducto($ID_producto, $nombre_producto, $precio, $stock, $ID_categoria, $foto_url, $sin_stock) {
+    public function editarProducto($nombre_producto, $precio, $stock, $ID_categoria, $foto_url, $sin_stock, $ID_producto) {
         $query = $this->db->prepare('UPDATE productos SET nombre_producto = ?, precio = ?, stock = ?, ID_categoria = ?, foto_url = ?, sin_stock = ? WHERE ID_producto = ?');
-        $query->execute([$ID_producto, $nombre_producto, $precio, $stock, $ID_categoria, $foto_url, $sin_stock]);
+        $query->execute([$nombre_producto, $precio, $stock, $ID_categoria, $foto_url, $sin_stock, $ID_producto]);
     }
-
-    // public function actualizarProducto($ID_producto, $sin_stock) {
-    //     $query = $this->db->prepare('UPDATE productos SET sin_stock = ? WHERE ID_producto = ?');
-    //     $query->execute([$sin_stock, $ID_producto]);
-    // }
 }

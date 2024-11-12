@@ -13,6 +13,4 @@
     $router->addRoute('productos/:id',   'PUT',      'productosApiControlador',     'editarProducto');
 
     $router->route($_GET['resource'], $_SERVER['REQUEST_METHOD']);
-
-    //productos?sin_stock=false
-    //productos?orderBy=LoQueQuieraOrdenar&sort=asc
+    

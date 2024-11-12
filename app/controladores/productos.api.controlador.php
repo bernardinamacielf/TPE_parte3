@@ -14,23 +14,40 @@ class productosApiControlador {
 
     // api/productos (GET)
     public function obtenerProductos($req, $res) {
-        $filtrarSinStock = false;
-        if(isset($req->query->sin_stock)) {
-            $filtrarSinStock = $req->query->sin_stock;
-        }
-
-        $orderBy = false;
+        $orderBy = null;
         if(isset($req->query->orderBy)) {
             $orderBy = $req->query->orderBy;
         }
 
-        // Obtener el parámetro orderDirection (ASC o DESC)
         $orderDirection = 'ASC';
         if (isset($req->query->orderDirection)) {
             $orderDirection = $req->query->orderDirection;
         }
 
-        $productos = $this->modelo->obtenerProductos($filtrarSinStock, $orderBy, $orderDirection);
+        $filtro = null;
+        if (isset($req->query->filtro)) {
+            $filtro = $req->query->filtro;
+        }
+
+        $valor = null;
+        if (isset($req->query->valor)) {
+            $valor = $req->query->valor;
+        }
+
+        $pagina = 1;
+        if(isset($req->query->pagina)) {
+            $pagina = $req->query->pagina;
+        }
+
+        $limite = null;
+        if(isset($req->query->limite)) {
+            $limite = $req->query->limite;
+            // if($limite < 10) {
+            //     return $this->vista->response("Debe haber al menos 10 productos disponibles para realizar paginación", 400);
+            // }
+        }
+
+        $productos = $this->modelo->obtenerProductos($orderBy, $orderDirection, $filtro, $valor, $pagina, $limite);
 
         return $this->vista->response($productos);
     }
@@ -104,42 +121,10 @@ class productosApiControlador {
         $foto_url = $req->body->foto_url;
         $sin_stock = $req->body->sin_stock;
 
-        $editado = $this->modelo->editarProducto($ID_producto, $nombre_producto, $precio, $stock, $ID_categoria, $foto_url, $sin_stock);
+        $this->modelo->editarProducto($nombre_producto, $precio, $stock, $ID_categoria, $foto_url, $sin_stock, $ID_producto);
 
-        if ($editado) {
-            $producto = $this->modelo->obtenerDetallesDelProducto($ID_producto);
-            return $this->vista->response($producto, 200);
-        } else {
-            return $this->vista->response("No se pudo actualizar el producto", 500);
-        }
+        $producto = $this->modelo->obtenerDetallesDelProducto($ID_producto);
+        return $this->vista->response($producto, 200);
+        
     }
-
-    // ACTUALIZO EL STOCK api/productos/:id/sin_stock
-    // public function actualizarProducto($req, $res) {
-    //     $ID_producto = $req->params->id;
-
-    //     // verifico que exista
-    //     $producto = $this->modelo->obtenerDetallesDelProducto($ID_producto);
-    //     if (!$producto) {
-    //         return $this->vista->response("El producto con el id=$ID_producto no existe", 404);
-    //     }
-
-    //     // valido los datos obligatorios
-    //     if (!isset($req->body->sin_stock)) {
-    //         return $this->vista->response("Faltan completar datos", 400);
-    //     }
-
-    //     // valido tipo de datos
-    //     if ($req->body->sin_stock !== 1 && $req->body->sin_stock !== 0) {
-    //         return $this->vista->response("Tipo de dato incorrecto", 400);
-    //     }
-
-    //     // finalizamos
-    //     $this->modelo->actualizarProducto($ID_producto, $req->body->sin_stock);
-
-    //      // obtengo la tarea modificada y la devuelvo en la respuesta
-    //      $producto = $this->modelo->obtenerDetallesDelProducto($ID_producto);
-    //      $this->vista->response($producto, 200);
-    // }
-
 }
