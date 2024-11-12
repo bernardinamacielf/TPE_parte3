@@ -1,11 +1,12 @@
 # VENTAS API
 
-# Integrantes:
+## Integrantes:
 * Dolores Garrido
 * Bernardina Maciel Fonte
 
 * Para realizar la tercera entrega del trabajo decidimos utilizar la tabla de productos.
-* Documentación de los Endpoints:
+
+## Documentación de los Endpoints:
 
 - Para poder obtener una lista de todos los productos existentes, utilizamos el verbo 'GET'
 ejemplo, GET http://localhost/tp_3/api/productos
@@ -42,7 +43,7 @@ ejemplo, PUT http://localhost/tp_3/api/productos/:id
 - Para ordenar opcionalmente al menos un campo de la tabla, lo podemos hacer de manera ASCENDENTE.
 ejemplo, GET http://localhost/tp_3/api/productos?orderBy=precio (También puede ordenarse por nombre_producto, stock, ID_categoria, sin_stock)
 
-* Requerimientos funcionales optativos.
+## Requerimientos funcionales optativos.
 
 En cuanto a los opcionales elegimos: 
 
@@ -71,5 +72,5 @@ El endpoint que lista todos los productos permite la paginación para dividir lo
 http://localhost/tp_3/api/productos?pagina=1&limite=10 (Obtiene los primeros 10 productos de la lista).
 http://localhost/tp_3/api/productos?pagina=2&limite=4 (Dependiendo de lo pedido en la solicitud anterior, va a obtener los productos disponibles).
 
-* NOTA:
+## NOTA:
 - Los productos comienzan a partir del ID_producto 26.
