@@ -32,19 +32,25 @@ class productosApiControlador {
         $valor = null;
         if (isset($req->query->valor)) {
             $valor = $req->query->valor;
+            if($valor < 0) {
+                return $this->vista->response("El número debe ser positivo", 400);
+            }
         }
 
         $pagina = 1;
         if(isset($req->query->pagina)) {
             $pagina = $req->query->pagina;
+            if($pagina < 0) {
+                return $this->vista->response("El número debe ser positivo", 400);
+            }
         }
 
         $limite = null;
         if(isset($req->query->limite)) {
             $limite = $req->query->limite;
-            // if($limite < 10) {
-            //     return $this->vista->response("Debe haber al menos 10 productos disponibles para realizar paginación", 400);
-            // }
+            if($limite < 0) {
+                return $this->vista->response("El número debe ser positivo", 400);
+            }
         }
 
         $productos = $this->modelo->obtenerProductos($orderBy, $orderDirection, $filtro, $valor, $pagina, $limite);
